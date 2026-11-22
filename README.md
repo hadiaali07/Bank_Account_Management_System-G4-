@@ -5,9 +5,9 @@
 - **Project:** A bank account management system that manages account records, transactions and data storage.
 ### Files:
 - `main.c` - main program and menu
-- `bnk.h` - header file (structures and function declarations)
+- `bank.h` - header file (structures and function declarations)
 - `records.c` - account records (find, print, search, update, delete account, change PIN)
-- `storage.c` - saves and loads account data
+- `storage.c` - saves and loads account data (login, summary report, sort account)
 - `transactions.c` - handles transactions (deposit, withdraw, etc.)
 
 ## Group Members DETAIL:
