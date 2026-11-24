@@ -1,6 +1,6 @@
 /* main.c - Member 1: menu, input helpers, add/display */
 #include <stdlib.h>
-#include "bank.h"
+#include "bank_updated.h"
 
 float history[MAX_ACCOUNTS][MAX_HISTORY];   /* definition of the 2D array */
 int   historyCount[MAX_ACCOUNTS];
