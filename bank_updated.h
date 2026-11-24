@@ -1,4 +1,4 @@
-/* bank.h - shared constants, structures and function prototypes */
+/* bank_updated.h - shared constants, structures and function prototypes */
 #ifndef BANK_H
 #define BANK_H
 
