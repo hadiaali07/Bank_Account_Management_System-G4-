@@ -1,5 +1,5 @@
 /* transactions.c - Member 3: deposit, withdraw, transfer, history */
-#include "bank.h"
+#include "bank_updated.h"
 
 /* Stores an amount in the account's last-5 history (shifts left when full) */
 void recordTransaction(int index, float amount) {
