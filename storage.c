@@ -1,6 +1,6 @@
 /* storage.c - Member 4: Iqra (CS-004)
 save/load file, login, sort and summary report */
-#include "bank.h"
+#include "bank_updated.h"
 
 /* Saves the number of accounts and all the accounts to the data file.
    It is called when the user chooses "Save and exit". */
