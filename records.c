@@ -1,6 +1,6 @@
 // Member 2: Hadia Ali (CS-011)
 /* records.c - Member 2: find, search, update, delete, change PIN */
-#include "bank.h"
+#include "bank_updated.h"
 
 /* Returns index of the account with this number, or -1 if not found */
 int findAccountIndex(struct Account accounts[], int count, int accNo) {
