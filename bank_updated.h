@@ -34,10 +34,10 @@ extern int   historyCount[MAX_ACCOUNTS];
 int   getValidInt(const char *prompt, int min, int max);
 float getValidFloat(const char *prompt, float min);
 void  getValidString(const char *prompt, char *dest, int size);
-
-/* ---- Records ---- */
 void addAccount(struct Account accounts[], int *count);
 void displayAllAccounts(struct Account accounts[], int count);
+
+/* ---- Records ---- */
 int  findAccountIndex(struct Account accounts[], int count, int accNo);
 void searchAccount(struct Account accounts[], int count);
 void updateAccount(struct Account accounts[], int count);
