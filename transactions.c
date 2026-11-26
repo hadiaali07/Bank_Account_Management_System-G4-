@@ -1,78 +1,102 @@
-/* transactions.c - Member 3: deposit, withdraw, transfer, history */
-#include "bank_updated.h"
+/*Transactions.c -Member 3:AYESHA SALAHUDDIN CS-010*/
+/* transactions.c - Member 3: Transaction Management - deposite,withdraw,transfer,histroy*/
 
-/* Stores an amount in the account's last-5 history (shifts left when full) */
-void recordTransaction(int index, float amount) {
-    int i;
-    if (historyCount[index] == MAX_HISTORY) {
-        for (i = 0; i < MAX_HISTORY - 1; i++) {
-            history[index][i] = history[index][i + 1];
+#include "bank_updated.h" // Includes shared header file
+
+/* Stores the last 5 transactions */
+void recordTransaction(int index, float amount) { // Records a transaction
+    int i; // Loop variable
+
+    if (historyCount[index] == MAX_HISTORY) { // Checks if history is full
+        for (i = 0; i < MAX_HISTORY - 1; i++) { // Shifts old transactions
+            history[index][i] = history[index][i + 1]; // Moves history left
         }
-        history[index][MAX_HISTORY - 1] = amount;
-    } else {
-        history[index][historyCount[index]] = amount;
-        historyCount[index]++;
+        history[index][MAX_HISTORY - 1] = amount; // Stores latest transaction
+    }
+    else {
+        history[index][historyCount[index]] = amount; // Stores new transaction
+        historyCount[index]++; // Increases history count
     }
 }
 
-/* Lowest balance allowed (current accounts may use their overdraft) */
-static float lowestAllowed(struct Account *acc) {
-    return acc->type == 2 ? MIN_BALANCE - acc->info.overdraftLimit : MIN_BALANCE;
+/* Calculates minimum allowed balance */
+static float lowestAllowed(struct Account *acc) { // Finds minimum balance
+    return acc->type == 2 // Checks account type
+        ? MIN_BALANCE - acc->info.overdraftLimit // Current account limit
+        : MIN_BALANCE; // Savings account limit
 }
 
-/* Adds money to the account */
-void deposit(struct Account *acc, int index) {
-    float amount = getValidFloat("Deposit amount: ", 0.01f);
-    acc->balance += amount;
-    recordTransaction(index, amount);
-    printf("Deposited %.2f. New balance: %.2f\n", amount, acc->balance);
+/* Deposits money into an account */
+void deposit(struct Account *acc, int index) { // Deposit function
+    float amount = getValidFloat("Deposit amount: ", 0.01f); // Takes amount
+
+    acc->balance += amount; // Adds money to balance
+    recordTransaction(index, amount); // Saves transaction
+
+    printf("Deposit successful! New balance: %.2f\n", acc->balance); // Displays balance
 }
 
-/* Takes money out, keeping the minimum balance */
-void withdraw(struct Account *acc, int index) {
-    float amount = getValidFloat("Withdraw amount: ", 0.01f);
-    if (acc->balance - amount < lowestAllowed(acc)) {
-        printf("Insufficient balance (minimum %.2f must remain).\n", lowestAllowed(acc));
-        return;
+/* Withdraws money from an account */
+void withdraw(struct Account *acc, int index) { // Withdrawal function
+    float amount = getValidFloat("Withdraw amount: ", 0.01f); // Takes amount
+
+    if (acc->balance - amount < lowestAllowed(acc)) { // Checks minimum balance
+        printf("Insufficient balance!\n"); // Displays error
+        return; // Stops function
     }
-    acc->balance -= amount;
-    recordTransaction(index, -amount);
-    printf("Withdrawn %.2f. New balance: %.2f\n", amount, acc->balance);
+
+    acc->balance -= amount; // Deducts money
+    recordTransaction(index, -amount); // Saves negative transaction
+
+    printf("Withdrawal successful! New balance: %.2f\n", acc->balance); // Displays balance
 }
 
-/* Sends money from one account to another */
-void transfer(struct Account *from, struct Account *to, int fromIdx, int toIdx) {
-    float amount;
-    if (fromIdx == toIdx) {
-        printf("Cannot transfer to the same account.\n");
-        return;
+/* Transfers money between accounts */
+void transfer(struct Account *from, struct Account *to, int fromIdx, int toIdx) { // Transfer function
+    float amount; // Stores transfer amount
+
+    if (fromIdx == toIdx) { // Checks same account
+        printf("Cannot transfer to the same account!\n"); // Displays error
+        return; // Stops function
     }
-    amount = getValidFloat("Transfer amount: ", 0.01f);
-    if (from->balance - amount < lowestAllowed(from)) {
-        printf("Insufficient balance (minimum %.2f must remain).\n", lowestAllowed(from));
-        return;
+
+    amount = getValidFloat("Transfer amount: ", 0.01f); // Takes amount
+
+    if (from->balance - amount < lowestAllowed(from)) { // Checks sender balance
+        printf("Insufficient balance!\n"); // Displays error
+        return; // Stops function
     }
-    from->balance -= amount;
-    to->balance   += amount;
-    recordTransaction(fromIdx, -amount);
-    recordTransaction(toIdx, amount);
-    printf("Transferred %.2f to %s. Your balance: %.2f\n", amount, to->name, from->balance);
+
+    from->balance -= amount; // Deducts from sender
+    to->balance += amount; // Adds to receiver
+
+    recordTransaction(fromIdx, -amount); // Records sender transaction
+    recordTransaction(toIdx, amount); // Records receiver transaction
+
+    printf("Transfer successful!\n"); // Displays success
 }
 
-/* Shows the current balance */
-void balanceInquiry(struct Account *acc) {
-    printf("Current balance of %s: %.2f\n", acc->name, acc->balance);
+/* Displays account balance */
+void balanceInquiry(struct Account *acc) { // Balance inquiry function
+    printf("\nAccount Holder: %s\n", acc->name); // Displays account holder
+    printf("Current Balance: %.2f\n", acc->balance); // Displays balance
 }
 
-/* Prints the stored transactions (oldest first) */
-void showMiniStatement(int index) {
-    int i;
-    if (historyCount[index] == 0) {
-        printf("No transactions in this session yet.\n");
-        return;
+/* Displays transaction history */
+void showMiniStatement(int index) { // Mini statement function
+    int i; // Loop variable
+
+    if (historyCount[index] == 0) { // Checks empty history
+        printf("No transactions found.\n"); // Displays message
+        return; // Stops function
     }
-    printf("--- Last %d transaction(s) ---\n", historyCount[index]);
-    for (i = 0; i < historyCount[index]; i++) {
-        printf("%2d. %s%.2f\n", i + 1, history[index][i] >= 0 ? "+" : "", history[index][i]);
+
+    printf("\n--- Mini Statement ---\n"); // Prints heading
+
+    for (i = 0; i < historyCount[index]; i++) { // Loops through history
+        printf("%2d. %s%.2f\n", // Prints transaction
+               i + 1, // Transaction number
+               history[index][i] >= 0 ? "+" : "", // Adds plus sign
+               history[index][i]); // Displays amount
     }
 }
