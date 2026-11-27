@@ -5,12 +5,12 @@
 /* Returns index of the account with this number, or -1 if not found */
 int findAccountIndex(struct Account accounts[], int count, int accNo) {
     int i;
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < count; i++) {                                 /* only filled positions */
         if (accounts[i].accNo == accNo) {
-            return i;
+            return i;                                             /* found: return position */
         }
     }
-    return -1;
+    return -1;                                                       /* not found */
 }
 
 /* Prints one account's details */
@@ -23,22 +23,22 @@ static void printAccount(struct Account *a) {
 
 /* Search by account number or by exact name */
 void searchAccount(struct Account accounts[], int count) {
-    int choice, i, idx, found = 0;
+    int choice, i, idx, found = 0;                                              /* found = flag, 0 means nothing found yet */
     char name[50];
     choice = getValidInt("Search by 1) account number  2) name: ", 1, 2);
-    if (choice == 1) {
+    if (choice == 1) {                                                          /* by number */
         idx = findAccountIndex(accounts, count, getValidInt("Account number: ", 1, 99999));
         if (idx == -1) printf("Account not found.\n");
         else printAccount(&accounts[idx]);
-    } else {
+    } else {                                                                    /* by name */
         getValidString("Name: ", name, sizeof(name));
         for (i = 0; i < count; i++) {
-            if (strcmp(accounts[i].name, name) == 0) {
+            if (strcmp(accounts[i].name, name) == 0) {                          /* 0 = same name */
                 printAccount(&accounts[i]);
                 found = 1;
             }
         }
-        if (!found) printf("Account not found.\n");
+        if (!found) printf("Account not found.\n");                             /* checked after the loop */
     }
 }
 
@@ -47,35 +47,37 @@ void updateAccount(struct Account accounts[], int count) {
     int idx = findAccountIndex(accounts, count, getValidInt("Account number to update: ", 1, 99999));
     if (idx == -1) {
         printf("Account not found.\n");
-        return;
+        return;                /* stop here */
     }
     printf("Current details:\n");
     printAccount(&accounts[idx]);
+    /* new text is written directly into the real account */
     getValidString("New name: ", accounts[idx].name, sizeof(accounts[idx].name));
     getValidString("New phone: ", accounts[idx].phone, sizeof(accounts[idx].phone));
     printf("Account updated.\n");
 }
 
-/* Removes an account by shifting later ones left (history shifts too) */
+/* Removes an account by shifting later ones left (history shifts too).
+   count is a pointer so the real count in main() is reduced. */
 void deleteAccount(struct Account accounts[], int *count) {
     int i, j, idx = findAccountIndex(accounts, *count, getValidInt("Account number to delete: ", 1, 99999));
     if (idx == -1) {
         printf("Account not found.\n");
         return;
     }
-    for (i = idx; i < *count - 1; i++) {
-        accounts[i] = accounts[i + 1];
+    for (i = idx; i < *count - 1; i++) {        /* stops early because i + 1 is used */
+        accounts[i] = accounts[i + 1];            /* copy whole next account */
         for (j = 0; j < MAX_HISTORY; j++) {
-            history[i][j] = history[i + 1][j];
+            history[i][j] = history[i + 1][j];        /* copy history row, box by box */
         }
-        historyCount[i] = historyCount[i + 1];
+        historyCount[i] = historyCount[i + 1];        /* copy history count */
     }
-    (*count)--;
-    historyCount[*count] = 0;
+    (*count)--;                                        /* one account less */
+    historyCount[*count] = 0;                           /* clear the unused last position */
     printf("Account deleted.\n");
 }
 
-/* Changes the PIN after checking the old one */
+/* Changes the PIN after checking the old one (acc is the real account's address) */
 void changePIN(struct Account *acc) {
     int oldPin = getValidInt("Old PIN: ", 0, 9999);
     if (oldPin != acc->pin) {
